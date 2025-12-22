@@ -70,4 +70,3 @@ export function getSidebarState(): boolean {
 export function setSidebarState(isOpen: boolean): void {
   localStorage.setItem(SIDEBAR_STATE_KEY, JSON.stringify(isOpen));
 }
-

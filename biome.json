@@ -44,12 +44,6 @@
     }
   },
   "files": {
-    "ignore": [
-      "node_modules",
-      "dist",
-      "src-tauri/target",
-      "*.min.js"
-    ]
+    "ignore": ["node_modules", "dist", "src-tauri/target", "*.min.js"]
   }
 }
-

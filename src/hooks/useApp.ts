@@ -1,8 +1,17 @@
-import { useCallback, useEffect, useState } from "react";
-import { addToHistory, getHistory, getSidebarState, setSidebarState } from "@/lib/storage";
-import { openDirectoryDialog, readFileContent, scanDirectory } from "@/lib/tauri";
+import {
+  addToHistory,
+  getHistory,
+  getSidebarState,
+  setSidebarState,
+} from "@/lib/storage";
+import {
+  openDirectoryDialog,
+  readFileContent,
+  scanDirectory,
+} from "@/lib/tauri";
 import { generateToc } from "@/lib/toc";
-import type { AppState, FileNode, HistoryEntry, TocItem } from "@/types";
+import type { AppState } from "@/types";
+import { useCallback, useEffect, useState } from "react";
 
 interface UseAppReturn extends AppState {
   openDirectory: () => Promise<void>;
@@ -150,4 +159,3 @@ export function useApp(): UseAppReturn {
     handleFileDrop,
   };
 }
-

@@ -13,6 +13,7 @@ export function Welcome({ onOpenDirectory }: WelcomeProps) {
             stroke="currentColor"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"
@@ -32,7 +33,13 @@ export function Welcome({ onOpenDirectory }: WelcomeProps) {
         onClick={onOpenDirectory}
         className="flex items-center gap-3 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg transition-colors shadow-md hover:shadow-lg"
       >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -56,4 +63,3 @@ export function Welcome({ onOpenDirectory }: WelcomeProps) {
     </div>
   );
 }
-

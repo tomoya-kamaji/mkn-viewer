@@ -5,10 +5,10 @@ import type { TocItem } from "@/types";
  */
 export function generateToc(markdown: string): TocItem[] {
   const headingRegex = /^(#{1,6})\s+(.+)$/gm;
-  const toc: TocItem[] = [];
+  const matches = markdown.matchAll(headingRegex);
 
-  let match: RegExpExecArray | null;
-  while ((match = headingRegex.exec(markdown)) !== null) {
+  const toc: TocItem[] = [];
+  for (const match of matches) {
     const level = match[1]?.length ?? 0;
     const text = match[2]?.trim() ?? "";
 
@@ -42,4 +42,3 @@ export function addHeadingIds(markdown: string): string {
     return `${hashes} ${text} {#${id}}`;
   });
 }
-

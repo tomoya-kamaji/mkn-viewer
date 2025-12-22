@@ -19,9 +19,7 @@ export function TableOfContents({ toc }: TableOfContentsProps) {
   return (
     <nav className="w-64 flex-shrink-0 border-l border-surface-200 dark:border-surface-800 overflow-y-auto">
       <div className="p-4">
-        <h3 className="text-sm font-semibold text-surface-800 dark:text-surface-200 mb-3">
-          目次
-        </h3>
+        <h3 className="text-sm font-semibold text-surface-800 dark:text-surface-200 mb-3">目次</h3>
         <ul className="space-y-1">
           {toc.map((item, index) => (
             <li key={`${item.id}-${index}`}>
@@ -41,4 +39,3 @@ export function TableOfContents({ toc }: TableOfContentsProps) {
     </nav>
   );
 }
-

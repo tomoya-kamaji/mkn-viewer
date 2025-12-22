@@ -1,5 +1,5 @@
-import { useState } from "react";
 import type { FileNode } from "@/types";
+import { useState } from "react";
 
 interface FileTreeProps {
   nodes: FileNode[];
@@ -67,17 +67,29 @@ function FileTreeNode({ node, selectedFile, onSelectFile, depth }: FileTreeNodeP
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
-            <svg className="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="w-4 h-4 text-amber-500"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
               <path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
             </svg>
           </>
         ) : (
           <>
             <span className="w-4" />
-            <svg className="w-4 h-4 text-surface-800 dark:text-surface-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="w-4 h-4 text-surface-800 dark:text-surface-200"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -102,4 +114,3 @@ function FileTreeNode({ node, selectedFile, onSelectFile, depth }: FileTreeNodeP
     </li>
   );
 }
-

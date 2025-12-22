@@ -49,4 +49,3 @@ export interface AppState {
   /** エラーメッセージ */
   error: string | null;
 }
-

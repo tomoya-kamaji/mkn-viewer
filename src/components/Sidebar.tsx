@@ -35,8 +35,19 @@ export function Sidebar({
           className="fixed left-4 top-4 z-50 p-2 bg-surface-100 dark:bg-surface-900 rounded-lg shadow-md hover:bg-surface-200 dark:hover:bg-surface-800 transition-colors"
           title="サイドバーを開く (⌘B)"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16M4 18h16"
+            />
           </svg>
         </button>
       )}
@@ -60,7 +71,13 @@ export function Sidebar({
               className="p-1.5 hover:bg-surface-200 dark:hover:bg-surface-800 rounded transition-colors"
               title="フォルダを開く"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -75,8 +92,19 @@ export function Sidebar({
               className="p-1.5 hover:bg-surface-200 dark:hover:bg-surface-800 rounded transition-colors"
               title="サイドバーを閉じる (⌘B)"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -93,7 +121,11 @@ export function Sidebar({
                     {currentDirectory.split("/").pop()}
                   </div>
                 )}
-                <FileTree nodes={fileTree} selectedFile={selectedFile} onSelectFile={onSelectFile} />
+                <FileTree
+                  nodes={fileTree}
+                  selectedFile={selectedFile}
+                  onSelectFile={onSelectFile}
+                />
               </div>
             </div>
           ) : (
@@ -117,4 +149,3 @@ export function Sidebar({
     </>
   );
 }
-

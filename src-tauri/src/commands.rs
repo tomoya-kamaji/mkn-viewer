@@ -29,7 +29,7 @@ pub fn open_directory_dialog() -> CommandResult<String> {
 
     match folder {
         Some(path) => Ok(path.to_string_lossy().to_string()),
-        None => Err(AppError::DialogCancelled),
+        None => Err(AppError::DialogCancelled.into_string()),
     }
 }
 
@@ -39,13 +39,14 @@ pub fn scan_directory(path: String) -> CommandResult<Vec<FileNode>> {
     let root_path = Path::new(&path);
 
     if !root_path.exists() {
-        return Err(AppError::FileNotFound(path));
+        return Err(AppError::FileNotFound(path).into_string());
     }
 
     if !root_path.is_dir() {
         return Err(AppError::ScanError(
             "指定されたパスはディレクトリではありません".to_string(),
-        ));
+        )
+        .into_string());
     }
 
     build_file_tree(root_path)
@@ -57,10 +58,10 @@ pub fn read_file_content(path: String) -> CommandResult<String> {
     let file_path = Path::new(&path);
 
     if !file_path.exists() {
-        return Err(AppError::FileNotFound(path));
+        return Err(AppError::FileNotFound(path).into_string());
     }
 
-    fs::read_to_string(file_path).map_err(|e| AppError::ReadError(e.to_string()))
+    fs::read_to_string(file_path).map_err(|e| AppError::ReadError(e.to_string()).into_string())
 }
 
 /// ファイルツリーを構築
@@ -68,8 +69,8 @@ fn build_file_tree(root: &Path) -> CommandResult<Vec<FileNode>> {
     let mut entries: Vec<FileNode> = Vec::new();
 
     // まず直下のエントリを収集
-    let read_dir =
-        fs::read_dir(root).map_err(|e| AppError::ScanError(format!("読み込みエラー: {}", e)))?;
+    let read_dir = fs::read_dir(root)
+        .map_err(|e| AppError::ScanError(format!("読み込みエラー: {}", e)).into_string())?;
 
     for entry in read_dir.flatten() {
         let path = entry.path();

@@ -1,8 +1,7 @@
-use serde::Serialize;
 use thiserror::Error;
 
 /// アプリケーションエラー
-#[derive(Error, Debug, Serialize)]
+#[derive(Error, Debug)]
 pub enum AppError {
     #[error("ファイルが見つかりません: {0}")]
     FileNotFound(String),
@@ -17,13 +16,13 @@ pub enum AppError {
     DialogCancelled,
 }
 
-// Tauriのコマンドで使用するため、InvokeErrorへの変換を実装
-impl From<AppError> for tauri::InvokeError {
-    fn from(error: AppError) -> Self {
-        tauri::InvokeError::from(error.to_string())
+/// コマンドの結果型（Tauriはstringエラーを返す）
+pub type CommandResult<T> = Result<T, String>;
+
+impl AppError {
+    /// エラーを文字列に変換
+    pub fn into_string(self) -> String {
+        self.to_string()
     }
 }
-
-/// コマンドの結果型
-pub type CommandResult<T> = Result<T, AppError>;
 

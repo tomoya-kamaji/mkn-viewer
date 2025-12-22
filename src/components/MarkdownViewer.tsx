@@ -1,10 +1,10 @@
-import { useEffect, useRef } from "react";
+import mermaid from "mermaid";
+import { useCallback, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
+import type { Components } from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
-import mermaid from "mermaid";
-import type { Components } from "react-markdown";
 
 // highlight.js のテーマ
 import "highlight.js/styles/github-dark.css";
@@ -21,42 +21,53 @@ mermaid.initialize({
   securityLevel: "loose",
 });
 
+/**
+ * 単一のMermaidブロックをレンダリング
+ */
+async function renderMermaidBlock(block: Element, index: number): Promise<void> {
+  const code = block.textContent ?? "";
+  const parent = block.parentElement;
+
+  if (!parent || !code) {
+    return;
+  }
+
+  try {
+    const id = `mermaid-${Date.now()}-${index}`;
+    const { svg } = await mermaid.render(id, code);
+    const wrapper = document.createElement("div");
+    wrapper.className = "mermaid-diagram my-4 flex justify-center";
+    wrapper.innerHTML = svg;
+    parent.replaceWith(wrapper);
+  } catch (error) {
+    console.error("Mermaid rendering error:", error);
+  }
+}
+
 export function MarkdownViewer({ content, fileName }: MarkdownViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Mermaidの図を描画
+  const renderMermaid = useCallback(async () => {
+    const container = containerRef.current;
+    if (!container) {
+      return;
+    }
+
+    const mermaidBlocks = container.querySelectorAll("code.language-mermaid");
+    const promises = Array.from(mermaidBlocks).map((block, i) => renderMermaidBlock(block, i));
+    await Promise.all(promises);
+  }, []);
+
+  // コンテンツにMermaidブロックが含まれる場合のみレンダリング
+  const hasMermaid = content.includes("```mermaid");
+
   useEffect(() => {
-    const renderMermaid = async () => {
-      if (!containerRef.current) {
-        return;
-      }
-
-      const mermaidBlocks = containerRef.current.querySelectorAll("code.language-mermaid");
-      for (let i = 0; i < mermaidBlocks.length; i++) {
-        const block = mermaidBlocks[i];
-        if (!block) {
-          continue;
-        }
-        const code = block.textContent ?? "";
-        const parent = block.parentElement;
-
-        if (parent && code) {
-          try {
-            const id = `mermaid-${Date.now()}-${i}`;
-            const { svg } = await mermaid.render(id, code);
-            const wrapper = document.createElement("div");
-            wrapper.className = "mermaid-diagram my-4 flex justify-center";
-            wrapper.innerHTML = svg;
-            parent.replaceWith(wrapper);
-          } catch (error) {
-            console.error("Mermaid rendering error:", error);
-          }
-        }
-      }
-    };
-
-    renderMermaid();
-  }, [content]);
+    // コンテンツにMermaidブロックがあれば再レンダリング
+    if (hasMermaid) {
+      renderMermaid();
+    }
+  }, [hasMermaid, renderMermaid]);
 
   // 見出しにIDを付与するカスタムコンポーネント
   const components: Components = {
@@ -173,4 +184,3 @@ function extractTextFromChildren(children: React.ReactNode): string {
   }
   return "";
 }
-
