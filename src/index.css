@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* カスタムスクロールバー */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #a1a1aa;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #71717a;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #52525b;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #71717a;
+}
+
+/* Markdown用のタイポグラフィ */
+.markdown-body {
+  @apply leading-relaxed;
+}
+
+.markdown-body h1 {
+  @apply text-3xl font-bold mt-8 mb-4 pb-2 border-b border-surface-200 dark:border-surface-800;
+}
+
+.markdown-body h2 {
+  @apply text-2xl font-bold mt-6 mb-3 pb-2 border-b border-surface-200 dark:border-surface-800;
+}
+
+.markdown-body h3 {
+  @apply text-xl font-semibold mt-5 mb-2;
+}
+
+.markdown-body h4 {
+  @apply text-lg font-semibold mt-4 mb-2;
+}
+
+.markdown-body h5 {
+  @apply text-base font-semibold mt-3 mb-1;
+}
+
+.markdown-body h6 {
+  @apply text-sm font-semibold mt-3 mb-1 text-surface-800 dark:text-surface-200;
+}
+
+.markdown-body p {
+  @apply my-4;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  @apply my-4 pl-6;
+}
+
+.markdown-body ul {
+  @apply list-disc;
+}
+
+.markdown-body ol {
+  @apply list-decimal;
+}
+
+.markdown-body li {
+  @apply my-1;
+}
+
+.markdown-body blockquote {
+  @apply border-l-4 border-blue-500 pl-4 my-4 italic text-surface-800 dark:text-surface-200;
+}
+
+.markdown-body code:not(pre code) {
+  @apply bg-surface-200 dark:bg-surface-800 px-1.5 py-0.5 rounded text-sm font-mono;
+}
+
+.markdown-body pre {
+  @apply my-4 p-4 rounded-lg overflow-x-auto bg-surface-900 dark:bg-surface-950;
+}
+
+.markdown-body pre code {
+  @apply text-sm leading-relaxed;
+}
+
+.markdown-body a {
+  @apply text-blue-600 dark:text-blue-400 hover:underline;
+}
+
+.markdown-body table {
+  @apply w-full my-4 border-collapse;
+}
+
+.markdown-body th,
+.markdown-body td {
+  @apply border border-surface-200 dark:border-surface-800 px-4 py-2;
+}
+
+.markdown-body th {
+  @apply bg-surface-100 dark:bg-surface-900 font-semibold text-left;
+}
+
+.markdown-body img {
+  @apply max-w-full h-auto rounded my-4;
+}
+
+.markdown-body hr {
+  @apply my-8 border-surface-200 dark:border-surface-800;
+}
+
+/* チェックボックス */
+.markdown-body input[type="checkbox"] {
+  @apply mr-2;
+}
+
+/* highlight.js のダークテーマ調整 */
+.hljs {
+  background: transparent !important;
+}
+

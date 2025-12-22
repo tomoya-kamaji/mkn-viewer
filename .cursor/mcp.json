@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "mastra": {
+      "command": "npx",
+      "args": ["-y", "@mastra/mcp-docs-server"]
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
+    "Notion": {
+      "url": "https://mcp.notion.com/mcp"
+    }
+  }
+}
