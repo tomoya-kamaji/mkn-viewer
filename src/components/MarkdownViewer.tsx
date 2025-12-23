@@ -5,6 +5,7 @@ import type { Components } from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
+import type { ThemeMode } from "@/types";
 
 // highlight.js のテーマ
 import "highlight.js/styles/github-dark.css";
@@ -12,6 +13,7 @@ import "highlight.js/styles/github-dark.css";
 interface MarkdownViewerProps {
   content: string;
   fileName: string;
+  theme: ThemeMode;
 }
 
 // Mermaidの初期化
@@ -24,7 +26,10 @@ mermaid.initialize({
 /**
  * 単一のMermaidブロックをレンダリング
  */
-async function renderMermaidBlock(block: Element, index: number): Promise<void> {
+async function renderMermaidBlock(
+  block: Element,
+  index: number
+): Promise<void> {
   const code = block.textContent ?? "";
   const parent = block.parentElement;
 
@@ -44,8 +49,13 @@ async function renderMermaidBlock(block: Element, index: number): Promise<void> 
   }
 }
 
-export function MarkdownViewer({ content, fileName }: MarkdownViewerProps) {
+export function MarkdownViewer({
+  content,
+  fileName,
+  theme: _theme,
+}: MarkdownViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  // themeはCSS変数で自動適用されるため、ここでは明示的に使用しない
 
   // Mermaidの図を描画
   const renderMermaid = useCallback(async () => {
@@ -55,7 +65,9 @@ export function MarkdownViewer({ content, fileName }: MarkdownViewerProps) {
     }
 
     const mermaidBlocks = container.querySelectorAll("code.language-mermaid");
-    const promises = Array.from(mermaidBlocks).map((block, i) => renderMermaidBlock(block, i));
+    const promises = Array.from(mermaidBlocks).map((block, i) =>
+      renderMermaidBlock(block, i)
+    );
     await Promise.all(promises);
   }, []);
 
@@ -136,16 +148,21 @@ export function MarkdownViewer({ content, fileName }: MarkdownViewerProps) {
   };
 
   return (
-    <div ref={containerRef} className="h-full overflow-y-auto">
-      {/* ファイル名ヘッダー */}
-      <div className="sticky top-0 z-10 bg-surface-50/95 dark:bg-surface-950/95 backdrop-blur border-b border-surface-200 dark:border-surface-800 px-8 py-3">
-        <h1 className="text-lg font-semibold text-surface-900 dark:text-surface-100 truncate">
-          {fileName}
-        </h1>
-      </div>
+    <div ref={containerRef} className="h-full overflow-y-auto scroll-smooth">
+      {/* ファイル名ヘッダー - ミニマルデザイン */}
+      <header className="sticky top-0 z-10 backdrop-blur-xl bg-surface-50/80 dark:bg-surface-950/80 border-b border-surface-200/50 dark:border-surface-800/50">
+        <div className="max-w-3xl mx-auto px-8 py-4">
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-violet-500 to-indigo-500" />
+            <h1 className="text-sm font-medium tracking-wide text-surface-600 dark:text-surface-400 truncate">
+              {fileName}
+            </h1>
+          </div>
+        </div>
+      </header>
 
-      {/* Markdownコンテンツ */}
-      <div className="markdown-body p-8 max-w-4xl mx-auto">
+      {/* Markdownコンテンツ - ゆったりとした余白 */}
+      <article className="markdown-body px-8 py-12 max-w-3xl mx-auto">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeHighlight, rehypeRaw]}
@@ -153,7 +170,7 @@ export function MarkdownViewer({ content, fileName }: MarkdownViewerProps) {
         >
           {content}
         </ReactMarkdown>
-      </div>
+      </article>
     </div>
   );
 }

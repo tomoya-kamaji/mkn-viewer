@@ -28,6 +28,9 @@ export interface TocItem {
   level: number;
 }
 
+/** テーマモード */
+export type ThemeMode = "system" | "dark" | "dracula" | "one-dark";
+
 /** アプリケーションの状態 */
 export interface AppState {
   /** 現在選択されているディレクトリ */
@@ -48,4 +51,6 @@ export interface AppState {
   isLoading: boolean;
   /** エラーメッセージ */
   error: string | null;
+  /** テーマモード */
+  theme: ThemeMode;
 }

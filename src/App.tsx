@@ -23,11 +23,13 @@ function App() {
     history,
     isLoading,
     error,
+    theme,
     openDirectory,
     openDirectoryFromPath,
     selectFile,
     toggleSidebar,
     handleFileDrop,
+    changeTheme,
   } = useApp();
 
   // ファイルドロップイベントのリスナー
@@ -52,15 +54,19 @@ function App() {
         selectedFile={selectedFile}
         history={history}
         currentDirectory={currentDirectory}
+        theme={theme}
         onSelectFile={selectFile}
         onOpenDirectory={openDirectory}
         onOpenDirectoryFromPath={openDirectoryFromPath}
         onToggle={toggleSidebar}
+        onThemeChange={changeTheme}
       />
 
       {/* メインコンテンツ */}
       <main
-        className={`flex-1 flex transition-all duration-200 ${isSidebarOpen ? "ml-[280px]" : "ml-0"}`}
+        className={`flex-1 flex transition-all duration-200 ${
+          isSidebarOpen ? "ml-[280px]" : "ml-0"
+        }`}
       >
         {isLoading ? (
           <div className="flex-1">
@@ -74,7 +80,11 @@ function App() {
           <>
             {/* Markdownビューア */}
             <div className="flex-1 min-w-0">
-              <MarkdownViewer content={markdownContent} fileName={fileName} />
+              <MarkdownViewer
+                content={markdownContent}
+                fileName={fileName}
+                theme={theme}
+              />
             </div>
             {/* 目次 */}
             {toc.length > 0 && <TableOfContents toc={toc} />}

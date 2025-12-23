@@ -1,7 +1,8 @@
-import type { HistoryEntry } from "@/types";
+import type { HistoryEntry, ThemeMode } from "@/types";
 
 const HISTORY_KEY = "mkn_history";
 const SIDEBAR_STATE_KEY = "mkn_sidebar_state";
+const THEME_KEY = "mkn_theme";
 const MAX_HISTORY_ENTRIES = 10;
 
 /**
@@ -69,4 +70,26 @@ export function getSidebarState(): boolean {
  */
 export function setSidebarState(isOpen: boolean): void {
   localStorage.setItem(SIDEBAR_STATE_KEY, JSON.stringify(isOpen));
+}
+
+/**
+ * テーマモードを取得
+ */
+export function getTheme(): ThemeMode {
+  try {
+    const data = localStorage.getItem(THEME_KEY);
+    if (!data) {
+      return "dracula"; // デフォルトはDracula
+    }
+    return JSON.parse(data) as ThemeMode;
+  } catch {
+    return "dracula";
+  }
+}
+
+/**
+ * テーマモードを保存
+ */
+export function setTheme(theme: ThemeMode): void {
+  localStorage.setItem(THEME_KEY, JSON.stringify(theme));
 }

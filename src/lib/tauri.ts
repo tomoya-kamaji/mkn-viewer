@@ -1,19 +1,22 @@
 import type { FileNode } from "@/types";
+import { open } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api/tauri";
 
 /**
- * ディレクトリ選択ダイアログを開く
+ * ディレクトリ選択ダイアログを開く（非同期・ノンブロッキング）
  */
 export async function openDirectoryDialog(): Promise<string | null> {
-  try {
-    return await invoke<string>("open_directory_dialog");
-  } catch (error) {
-    // ダイアログがキャンセルされた場合
-    if (String(error).includes("キャンセル")) {
-      return null;
-    }
-    throw error;
+  const result = await open({
+    directory: true,
+    title: "フォルダを選択",
+  });
+
+  if (result === null) {
+    return null; // キャンセル
   }
+
+  // 複数選択の場合は配列、単一の場合は文字列
+  return Array.isArray(result) ? result[0] ?? null : result;
 }
 
 /**

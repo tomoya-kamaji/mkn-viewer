@@ -2,7 +2,9 @@ import {
   addToHistory,
   getHistory,
   getSidebarState,
+  getTheme,
   setSidebarState,
+  setTheme,
 } from "@/lib/storage";
 import {
   openDirectoryDialog,
@@ -10,7 +12,7 @@ import {
   scanDirectory,
 } from "@/lib/tauri";
 import { generateToc } from "@/lib/toc";
-import type { AppState } from "@/types";
+import type { AppState, ThemeMode } from "@/types";
 import { useCallback, useEffect, useState } from "react";
 
 interface UseAppReturn extends AppState {
@@ -19,6 +21,7 @@ interface UseAppReturn extends AppState {
   selectFile: (path: string) => Promise<void>;
   toggleSidebar: () => void;
   handleFileDrop: (paths: string[]) => Promise<void>;
+  changeTheme: (theme: ThemeMode) => void;
 }
 
 const initialState: AppState = {
@@ -31,6 +34,7 @@ const initialState: AppState = {
   history: [],
   isLoading: false,
   error: null,
+  theme: "dracula",
 };
 
 export function useApp(): UseAppReturn {
@@ -38,7 +42,32 @@ export function useApp(): UseAppReturn {
     ...initialState,
     isSidebarOpen: getSidebarState(),
     history: getHistory(),
+    theme: getTheme(),
   }));
+
+  // テーマ適用
+  useEffect(() => {
+    const root = document.documentElement;
+    const currentTheme = state.theme;
+
+    if (currentTheme === "system") {
+      // OS設定に従う
+      const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      ).matches;
+      root.removeAttribute("data-theme");
+      root.classList.toggle("dark", prefersDark);
+    } else if (currentTheme === "dark") {
+      root.removeAttribute("data-theme");
+      root.classList.add("dark");
+    } else if (currentTheme === "dracula") {
+      root.setAttribute("data-theme", "dracula");
+      root.classList.add("dark");
+    } else if (currentTheme === "one-dark") {
+      root.setAttribute("data-theme", "one-dark");
+      root.classList.add("dark");
+    }
+  }, [state.theme]);
 
   // キーボードショートカット
   useEffect(() => {
@@ -150,6 +179,14 @@ export function useApp(): UseAppReturn {
     [openDirectoryFromPath, selectFile]
   );
 
+  const changeTheme = useCallback(
+    (theme: ThemeMode) => {
+      setTheme(theme);
+      updateState({ theme });
+    },
+    [updateState]
+  );
+
   return {
     ...state,
     openDirectory,
@@ -157,5 +194,6 @@ export function useApp(): UseAppReturn {
     selectFile,
     toggleSidebar,
     handleFileDrop,
+    changeTheme,
   };
 }

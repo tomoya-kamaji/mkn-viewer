@@ -43,10 +43,10 @@ pub fn scan_directory(path: String) -> CommandResult<Vec<FileNode>> {
     }
 
     if !root_path.is_dir() {
-        return Err(AppError::ScanError(
-            "指定されたパスはディレクトリではありません".to_string(),
-        )
-        .into_string());
+        return Err(
+            AppError::ScanError("指定されたパスはディレクトリではありません".to_string())
+                .into_string(),
+        );
     }
 
     build_file_tree(root_path)
@@ -64,6 +64,14 @@ pub fn read_file_content(path: String) -> CommandResult<String> {
     fs::read_to_string(file_path).map_err(|e| AppError::ReadError(e.to_string()).into_string())
 }
 
+/// 無視するディレクトリ名
+const IGNORED_DIRS: &[&str] = &["node_modules", "target", "dist", ".git"];
+
+/// ディレクトリを無視すべきかどうか
+fn should_ignore_dir(name: &str) -> bool {
+    IGNORED_DIRS.contains(&name)
+}
+
 /// ファイルツリーを構築
 fn build_file_tree(root: &Path) -> CommandResult<Vec<FileNode>> {
     let mut entries: Vec<FileNode> = Vec::new();
@@ -76,8 +84,8 @@ fn build_file_tree(root: &Path) -> CommandResult<Vec<FileNode>> {
         let path = entry.path();
         let name = entry.file_name().to_string_lossy().to_string();
 
-        // 隠しファイル/フォルダをスキップ
-        if name.starts_with('.') {
+        // 無視するディレクトリをスキップ
+        if path.is_dir() && should_ignore_dir(&name) {
             continue;
         }
 
@@ -128,6 +136,14 @@ fn contains_markdown_files(dir: &Path) -> bool {
     WalkDir::new(dir)
         .max_depth(10) // 深すぎる階層は無視
         .into_iter()
+        .filter_entry(|e| {
+            // 無視するディレクトリをスキップ
+            if e.file_type().is_dir() {
+                let name = e.file_name().to_string_lossy();
+                return !should_ignore_dir(&name);
+            }
+            true
+        })
         .filter_map(|e| e.ok())
         .any(|e| is_markdown_file(e.path()))
 }

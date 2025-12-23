@@ -1,6 +1,7 @@
-import type { FileNode, HistoryEntry } from "@/types";
+import type { FileNode, HistoryEntry, ThemeMode } from "@/types";
 import { FileTree } from "./FileTree";
 import { History } from "./History";
+import { ThemeSelector } from "./ThemeSelector";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -8,10 +9,12 @@ interface SidebarProps {
   selectedFile: string | null;
   history: HistoryEntry[];
   currentDirectory: string | null;
+  theme: ThemeMode;
   onSelectFile: (path: string) => void;
   onOpenDirectory: () => void;
   onOpenDirectoryFromPath: (path: string) => void;
   onToggle: () => void;
+  onThemeChange: (theme: ThemeMode) => void;
 }
 
 export function Sidebar({
@@ -20,10 +23,12 @@ export function Sidebar({
   selectedFile,
   history,
   currentDirectory,
+  theme,
   onSelectFile,
   onOpenDirectory,
   onOpenDirectoryFromPath,
   onToggle,
+  onThemeChange,
 }: SidebarProps) {
   return (
     <>
@@ -63,8 +68,11 @@ export function Sidebar({
       >
         {/* ヘッダー */}
         <div className="flex items-center justify-between p-4 border-b border-surface-200 dark:border-surface-800">
-          <h2 className="font-semibold text-surface-900 dark:text-surface-100">エクスプローラー</h2>
+          <h2 className="font-semibold text-surface-900 dark:text-surface-100">
+            エクスプローラー
+          </h2>
           <div className="flex gap-1">
+            <ThemeSelector currentTheme={theme} onThemeChange={onThemeChange} />
             <button
               type="button"
               onClick={onOpenDirectory}
