@@ -1,3 +1,4 @@
+import type { ThemeMode } from "@/types";
 import mermaid from "mermaid";
 import { useCallback, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
@@ -5,7 +6,6 @@ import type { Components } from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
-import type { ThemeMode } from "@/types";
 
 // highlight.js のテーマ
 import "highlight.js/styles/github-dark.css";
@@ -26,10 +26,7 @@ mermaid.initialize({
 /**
  * 単一のMermaidブロックをレンダリング
  */
-async function renderMermaidBlock(
-  block: Element,
-  index: number
-): Promise<void> {
+async function renderMermaidBlock(block: Element, index: number): Promise<void> {
   const code = block.textContent ?? "";
   const parent = block.parentElement;
 
@@ -49,11 +46,7 @@ async function renderMermaidBlock(
   }
 }
 
-export function MarkdownViewer({
-  content,
-  fileName,
-  theme: _theme,
-}: MarkdownViewerProps) {
+export function MarkdownViewer({ content, fileName, theme: _theme }: MarkdownViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   // themeはCSS変数で自動適用されるため、ここでは明示的に使用しない
 
@@ -65,9 +58,7 @@ export function MarkdownViewer({
     }
 
     const mermaidBlocks = container.querySelectorAll("code.language-mermaid");
-    const promises = Array.from(mermaidBlocks).map((block, i) =>
-      renderMermaidBlock(block, i)
-    );
+    const promises = Array.from(mermaidBlocks).map((block, i) => renderMermaidBlock(block, i));
     await Promise.all(promises);
   }, []);
 

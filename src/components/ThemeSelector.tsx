@@ -13,14 +13,12 @@ const themes: { value: ThemeMode; label: string; icon: string }[] = [
   { value: "one-dark", label: "One Dark", icon: "🌑" },
 ];
 
-export function ThemeSelector({
-  currentTheme,
-  onThemeChange,
-}: ThemeSelectorProps) {
+export function ThemeSelector({ currentTheme, onThemeChange }: ThemeSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const currentThemeData =
-    themes.find((t) => t.value === currentTheme) ?? themes[3] ?? themes[0]!;
+  // themes配列は固定なのでデフォルト値を直接指定
+  const defaultTheme = { value: "dracula" as ThemeMode, label: "Dracula", icon: "🧛" };
+  const currentThemeData = themes.find((t) => t.value === currentTheme) ?? defaultTheme;
 
   return (
     <div className="relative">
@@ -36,11 +34,8 @@ export function ThemeSelector({
       {isOpen && (
         <>
           {/* オーバーレイ */}
-          <div
-            className="fixed inset-0 z-10"
-            onClick={() => setIsOpen(false)}
-            aria-hidden="true"
-          />
+          {/* biome-ignore lint/a11y/useKeyWithClickEvents: オーバーレイはクリックのみで閉じる */}
+          <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} aria-hidden="true" />
 
           {/* ドロップダウンメニュー */}
           <div className="absolute right-0 top-full mt-1 w-40 bg-surface-100 dark:bg-surface-900 border border-surface-200 dark:border-surface-800 rounded-lg shadow-lg z-20">

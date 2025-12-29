@@ -1,0 +1,14 @@
+# Lefthook configuration
+# https://github.com/evilmartians/lefthook
+
+pre-commit:
+  commands:
+    biome:
+      glob: "*.{js,jsx,ts,tsx,json,css}"
+      run: bunx biome check --staged --no-errors-on-unmatched
+
+pre-push:
+  commands:
+    check:
+      run: bun run check
+

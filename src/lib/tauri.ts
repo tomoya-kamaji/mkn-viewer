@@ -16,7 +16,7 @@ export async function openDirectoryDialog(): Promise<string | null> {
   }
 
   // 複数選択の場合は配列、単一の場合は文字列
-  return Array.isArray(result) ? result[0] ?? null : result;
+  return Array.isArray(result) ? (result[0] ?? null) : result;
 }
 
 /**

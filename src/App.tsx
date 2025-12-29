@@ -80,11 +80,7 @@ function App() {
           <>
             {/* Markdownビューア */}
             <div className="flex-1 min-w-0">
-              <MarkdownViewer
-                content={markdownContent}
-                fileName={fileName}
-                theme={theme}
-              />
+              <MarkdownViewer content={markdownContent} fileName={fileName} theme={theme} />
             </div>
             {/* 目次 */}
             {toc.length > 0 && <TableOfContents toc={toc} />}

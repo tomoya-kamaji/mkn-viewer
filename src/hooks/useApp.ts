@@ -6,11 +6,7 @@ import {
   setSidebarState,
   setTheme,
 } from "@/lib/storage";
-import {
-  openDirectoryDialog,
-  readFileContent,
-  scanDirectory,
-} from "@/lib/tauri";
+import { openDirectoryDialog, readFileContent, scanDirectory } from "@/lib/tauri";
 import { generateToc } from "@/lib/toc";
 import type { AppState, ThemeMode } from "@/types";
 import { useCallback, useEffect, useState } from "react";
@@ -52,9 +48,7 @@ export function useApp(): UseAppReturn {
 
     if (currentTheme === "system") {
       // OS設定に従う
-      const prefersDark = window.matchMedia(
-        "(prefers-color-scheme: dark)"
-      ).matches;
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
       root.removeAttribute("data-theme");
       root.classList.toggle("dark", prefersDark);
     } else if (currentTheme === "dark") {

@@ -68,9 +68,7 @@ export function Sidebar({
       >
         {/* ヘッダー */}
         <div className="flex items-center justify-between p-4 border-b border-surface-200 dark:border-surface-800">
-          <h2 className="font-semibold text-surface-900 dark:text-surface-100">
-            エクスプローラー
-          </h2>
+          <h2 className="font-semibold text-surface-900 dark:text-surface-100">エクスプローラー</h2>
           <div className="flex gap-1">
             <ThemeSelector currentTheme={theme} onThemeChange={onThemeChange} />
             <button

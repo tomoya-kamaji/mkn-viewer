@@ -78,7 +78,7 @@
   margin-top: 3.5rem;
   margin-bottom: 1.5rem;
   line-height: 1.2;
-  background: linear-gradient(135deg, currentColor 0%, rgba(255,255,255,0.6) 100%);
+  background: linear-gradient(135deg, currentColor 0%, rgba(255, 255, 255, 0.6) 100%);
   -webkit-background-clip: text;
   background-clip: text;
 }
@@ -215,12 +215,10 @@
   padding: 1.5rem;
   border-radius: 16px;
   overflow-x: auto;
-  background: linear-gradient(145deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.5) 100%);
-  border: 1px solid rgba(255,255,255,0.06);
-  box-shadow: 
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -2px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255,255,255,0.03);
+  background: linear-gradient(145deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.5) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1), inset 0 1px 0
+    rgba(255, 255, 255, 0.03);
 }
 
 .markdown-body pre code {
@@ -254,14 +252,14 @@
   border-spacing: 0;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .markdown-body th,
 .markdown-body td {
   padding: 0.875rem 1.25rem;
   text-align: left;
-  border-bottom: 1px solid rgba(128,128,128,0.12);
+  border-bottom: 1px solid rgba(128, 128, 128, 0.12);
 }
 
 .markdown-body th {
@@ -269,7 +267,7 @@
   font-size: 0.8125rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  background: rgba(128,128,128,0.08);
+  background: rgba(128, 128, 128, 0.08);
   opacity: 0.8;
 }
 
@@ -278,7 +276,7 @@
 }
 
 .markdown-body tr:hover td {
-  background: rgba(128,128,128,0.04);
+  background: rgba(128, 128, 128, 0.04);
 }
 
 /* 画像 - 美しいシャドウ */
@@ -287,9 +285,7 @@
   height: auto;
   margin: 2rem auto;
   border-radius: 12px;
-  box-shadow: 
-    0 10px 25px -5px rgba(0,0,0,0.15),
-    0 8px 10px -6px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
   display: block;
 }
 
@@ -298,7 +294,7 @@
   margin: 3rem 0;
   border: none;
   height: 1px;
-  background: linear-gradient(90deg, transparent 0%, rgba(128,128,128,0.3) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(128, 128, 128, 0.3) 50%, transparent 100%);
 }
 
 /* チェックボックス - カスタムスタイル */
@@ -307,7 +303,7 @@
   -webkit-appearance: none;
   width: 1.125rem;
   height: 1.125rem;
-  border: 2px solid rgba(128,128,128,0.3);
+  border: 2px solid rgba(128, 128, 128, 0.3);
   border-radius: 4px;
   margin-right: 0.5rem;
   vertical-align: middle;
