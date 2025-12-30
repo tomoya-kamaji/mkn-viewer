@@ -1,5 +1,6 @@
+import { useShortcut } from "@/hooks/useShortcut";
 import type { FileNode, GrepResult, HistoryEntry, ThemeMode } from "@/types";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { FileTree } from "./FileTree";
 import { History } from "./History";
 import { SearchPanel } from "./SearchPanel";
@@ -45,21 +46,11 @@ export function Sidebar({
   const [activeTab, setActiveTab] = useState<SidebarTab>("files");
 
   // Cmd+Shift+Fで検索タブに切り替え
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
+  const handleFocusSearch = useCallback(() => {
+    setActiveTab("search");
+  }, []);
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === "f") {
-        e.preventDefault();
-        setActiveTab("search");
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen]);
+  useShortcut("focusSearch", handleFocusSearch, isOpen);
 
   return (
     <>

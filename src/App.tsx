@@ -1,5 +1,5 @@
 import { listen } from "@tauri-apps/api/event";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { ErrorMessage } from "./components/ErrorMessage";
 import { LoadingSpinner } from "./components/LoadingSpinner";
 import { MarkdownViewer } from "./components/MarkdownViewer";
@@ -9,6 +9,7 @@ import { Welcome } from "./components/Welcome";
 import { ErrorProvider, useError } from "./contexts/ErrorContext";
 import { useFileSystem } from "./hooks/useFileSystem";
 import { useSearch } from "./hooks/useSearch";
+import { useShortcut } from "./hooks/useShortcut";
 import { useSidebar } from "./hooks/useSidebar";
 import { useTheme } from "./hooks/useTheme";
 
@@ -48,21 +49,15 @@ function AppContent() {
   }, [handleFileDrop]);
 
   // キーボードショートカット: Cmd/Ctrl + Shift + F で検索タブにフォーカス
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === "f") {
-        e.preventDefault();
-        // サイドバーが閉じている場合は開く
-        if (!isSidebarOpen) {
-          openSidebar();
-        }
-        // 検索タブに切り替える処理はSidebarコンポーネント側で行う
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+  const handleFocusSearch = useCallback(() => {
+    // サイドバーが閉じている場合は開く
+    if (!isSidebarOpen) {
+      openSidebar();
+    }
+    // 検索タブに切り替える処理はSidebarコンポーネント側で行う
   }, [isSidebarOpen, openSidebar]);
+
+  useShortcut("focusSearch", handleFocusSearch);
 
   const fileName = selectedFile?.split("/").pop() ?? "";
 

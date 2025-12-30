@@ -1,3 +1,4 @@
+import { useShortcut, useShortcuts } from "@/hooks/useShortcut";
 import type { ThemeMode } from "@/types";
 import mermaid from "mermaid";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -234,48 +235,42 @@ export function MarkdownViewer({ content, fileName, theme: _theme }: MarkdownVie
     }
   }, [currentMatchIndex, matches]);
 
-  // キーボードショートカット
-  useEffect(() => {
-    const handleCtrlF = (e: KeyboardEvent) => {
-      e.preventDefault();
-      setIsSearchOpen(true);
-      setTimeout(() => {
-        searchInputRef.current?.focus();
-      }, 0);
-    };
+  // キーボードショートカット: ページ内検索を開く
+  const handleOpenSearch = useCallback(() => {
+    setIsSearchOpen(true);
+    setTimeout(() => {
+      searchInputRef.current?.focus();
+    }, 0);
+  }, []);
 
-    const handleEscape = (e: KeyboardEvent) => {
-      e.preventDefault();
-      setIsSearchOpen(false);
-      setSearchQuery("");
-    };
+  // キーボードショートカット: ページ内検索を閉じる
+  const handleCloseSearch = useCallback(() => {
+    setIsSearchOpen(false);
+    setSearchQuery("");
+  }, []);
 
-    const handleEnter = (e: KeyboardEvent) => {
-      e.preventDefault();
-      if (e.shiftKey) {
-        setCurrentMatchIndex((prev) => (prev > 0 ? prev - 1 : matches.length - 1));
-      } else {
-        setCurrentMatchIndex((prev) => (prev < matches.length - 1 ? prev + 1 : 0));
-      }
-    };
+  // キーボードショートカット: 次の検索結果
+  const handleNextResult = useCallback(() => {
+    setCurrentMatchIndex((prev) => (prev < matches.length - 1 ? prev + 1 : 0));
+  }, [matches.length]);
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const isCtrlF = (e.metaKey || e.ctrlKey) && e.key === "f" && !e.shiftKey;
-      const isEscape = e.key === "Escape";
-      const isEnter = e.key === "Enter";
+  // キーボードショートカット: 前の検索結果
+  const handlePrevResult = useCallback(() => {
+    setCurrentMatchIndex((prev) => (prev > 0 ? prev - 1 : matches.length - 1));
+  }, [matches.length]);
 
-      if (isCtrlF) {
-        handleCtrlF(e);
-      } else if (isEscape && isSearchOpen) {
-        handleEscape(e);
-      } else if (isEnter && isSearchOpen && matches.length > 0) {
-        handleEnter(e);
-      }
-    };
+  // ページ内検索を開くショートカット（常に有効）
+  useShortcut("pageSearch", handleOpenSearch);
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isSearchOpen, matches.length]);
+  // 検索中のショートカット（検索パネルが開いている場合のみ有効）
+  useShortcuts(
+    {
+      closePageSearch: handleCloseSearch,
+      nextSearchResult: matches.length > 0 ? handleNextResult : undefined,
+      prevSearchResult: matches.length > 0 ? handlePrevResult : undefined,
+    },
+    isSearchOpen
+  );
 
   // 見出しにIDを付与するカスタムコンポーネント
   const components: Components = {

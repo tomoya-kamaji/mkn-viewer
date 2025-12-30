@@ -1,5 +1,6 @@
 import { getSidebarState, setSidebarState } from "@/lib/storage";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
+import { useShortcut } from "./useShortcut";
 
 interface UseSidebarReturn {
   isSidebarOpen: boolean;
@@ -27,17 +28,7 @@ export function useSidebar(): UseSidebarReturn {
   }, []);
 
   // キーボードショートカット: Cmd/Ctrl + B でサイドバーのトグル
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "b") {
-        e.preventDefault();
-        toggleSidebar();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [toggleSidebar]);
+  useShortcut("toggleSidebar", toggleSidebar);
 
   return { isSidebarOpen, toggleSidebar, openSidebar };
 }

@@ -17,7 +17,7 @@
       },
       "style": {
         "noNonNullAssertion": "warn",
-        "useBlockStatements": "error",
+        "useBlockStatements": "off",
         "useConsistentArrayType": {
           "level": "error",
           "options": {
