@@ -31,6 +31,22 @@ export interface TocItem {
 /** テーマモード */
 export type ThemeMode = "system" | "dark" | "dracula" | "one-dark";
 
+/** Grep検索結果 */
+export interface GrepResult {
+  /** ファイルのフルパス */
+  filePath: string;
+  /** ファイル名 */
+  fileName: string;
+  /** 行番号（1始まり） */
+  lineNumber: number;
+  /** 行の内容 */
+  lineContent: string;
+  /** マッチ開始位置（文字列内） */
+  matchStart: number;
+  /** マッチ終了位置（文字列内） */
+  matchEnd: number;
+}
+
 /** アプリケーションの状態 */
 export interface AppState {
   /** 現在選択されているディレクトリ */

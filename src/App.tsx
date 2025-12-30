@@ -24,12 +24,16 @@ function App() {
     isLoading,
     error,
     theme,
+    searchQuery,
+    searchResults,
+    isSearching,
     openDirectory,
     openDirectoryFromPath,
     selectFile,
     toggleSidebar,
     handleFileDrop,
     changeTheme,
+    searchFiles,
   } = useApp();
 
   // ファイルドロップイベントのリスナー
@@ -55,11 +59,15 @@ function App() {
         history={history}
         currentDirectory={currentDirectory}
         theme={theme}
+        searchQuery={searchQuery}
+        searchResults={searchResults}
+        isSearching={isSearching}
         onSelectFile={selectFile}
         onOpenDirectory={openDirectory}
         onOpenDirectoryFromPath={openDirectoryFromPath}
         onToggle={toggleSidebar}
         onThemeChange={changeTheme}
+        onSearchChange={searchFiles}
       />
 
       {/* メインコンテンツ */}

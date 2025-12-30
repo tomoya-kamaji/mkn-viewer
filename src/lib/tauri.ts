@@ -1,4 +1,4 @@
-import type { FileNode } from "@/types";
+import type { FileNode, GrepResult } from "@/types";
 import { open } from "@tauri-apps/api/dialog";
 import { invoke } from "@tauri-apps/api/tauri";
 
@@ -31,4 +31,11 @@ export async function scanDirectory(path: string): Promise<FileNode[]> {
  */
 export async function readFileContent(path: string): Promise<string> {
   return await invoke<string>("read_file_content", { path });
+}
+
+/**
+ * ディレクトリ内のMarkdownファイルを検索
+ */
+export async function grepDirectory(path: string, query: string): Promise<GrepResult[]> {
+  return await invoke<GrepResult[]>("grep_directory", { path, query });
 }

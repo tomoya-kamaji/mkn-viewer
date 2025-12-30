@@ -20,6 +20,24 @@ pub struct FileNode {
     pub children: Option<Vec<FileNode>>,
 }
 
+/// Grep検索結果
+#[derive(Debug, Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct GrepResult {
+    /// ファイルのフルパス
+    pub file_path: String,
+    /// ファイル名
+    pub file_name: String,
+    /// 行番号（1始まり）
+    pub line_number: usize,
+    /// 行の内容
+    pub line_content: String,
+    /// マッチ開始位置（文字列内）
+    pub match_start: usize,
+    /// マッチ終了位置（文字列内）
+    pub match_end: usize,
+}
+
 /// ディレクトリ選択ダイアログを開く
 #[tauri::command]
 pub fn open_directory_dialog() -> CommandResult<String> {
@@ -146,4 +164,80 @@ fn contains_markdown_files(dir: &Path) -> bool {
         })
         .filter_map(|e| e.ok())
         .any(|e| is_markdown_file(e.path()))
+}
+
+/// ディレクトリ内のMarkdownファイルを検索
+#[tauri::command]
+pub fn grep_directory(path: String, query: String) -> CommandResult<Vec<GrepResult>> {
+    let root_path = Path::new(&path);
+
+    if !root_path.exists() {
+        return Err(AppError::FileNotFound(path).into_string());
+    }
+
+    if !root_path.is_dir() {
+        return Err(
+            AppError::ScanError("指定されたパスはディレクトリではありません".to_string())
+                .into_string(),
+        );
+    }
+
+    if query.is_empty() {
+        return Ok(Vec::new());
+    }
+
+    let mut results: Vec<GrepResult> = Vec::new();
+
+    // ディレクトリを再帰的に走査
+    for entry in WalkDir::new(root_path)
+        .max_depth(100)
+        .into_iter()
+        .filter_entry(|e| {
+            // 無視するディレクトリをスキップ
+            if e.file_type().is_dir() {
+                let name = e.file_name().to_string_lossy();
+                return !should_ignore_dir(&name);
+            }
+            true
+        })
+        .filter_map(|e| e.ok())
+    {
+        let file_path = entry.path();
+
+        // Markdownファイルのみ処理
+        if !is_markdown_file(file_path) {
+            continue;
+        }
+
+        // ファイルを読み込む
+        let content = match fs::read_to_string(file_path) {
+            Ok(c) => c,
+            Err(_) => continue, // 読み込みエラーはスキップ
+        };
+
+        // ファイル名を取得
+        let file_name = file_path
+            .file_name()
+            .and_then(|n| n.to_str())
+            .unwrap_or("")
+            .to_string();
+
+        // 各行を検索
+        for (line_idx, line) in content.lines().enumerate() {
+            // 大文字小文字を区別しない検索
+            if let Some(match_start) = line.to_lowercase().find(&query.to_lowercase()) {
+                let match_end = match_start + query.len();
+                results.push(GrepResult {
+                    file_path: file_path.to_string_lossy().to_string(),
+                    file_name: file_name.clone(),
+                    line_number: line_idx + 1, // 1始まり
+                    line_content: line.to_string(),
+                    match_start,
+                    match_end,
+                });
+            }
+        }
+    }
+
+    Ok(results)
 }

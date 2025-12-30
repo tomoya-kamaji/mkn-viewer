@@ -6,10 +6,10 @@ import {
   setSidebarState,
   setTheme,
 } from "@/lib/storage";
-import { openDirectoryDialog, readFileContent, scanDirectory } from "@/lib/tauri";
+import { grepDirectory, openDirectoryDialog, readFileContent, scanDirectory } from "@/lib/tauri";
 import { generateToc } from "@/lib/toc";
-import type { AppState, ThemeMode } from "@/types";
-import { useCallback, useEffect, useState } from "react";
+import type { AppState, GrepResult, ThemeMode } from "@/types";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface UseAppReturn extends AppState {
   openDirectory: () => Promise<void>;
@@ -18,6 +18,10 @@ interface UseAppReturn extends AppState {
   toggleSidebar: () => void;
   handleFileDrop: (paths: string[]) => Promise<void>;
   changeTheme: (theme: ThemeMode) => void;
+  searchQuery: string;
+  searchResults: GrepResult[];
+  isSearching: boolean;
+  searchFiles: (query: string) => Promise<void>;
 }
 
 const initialState: AppState = {
@@ -41,6 +45,11 @@ export function useApp(): UseAppReturn {
     theme: getTheme(),
   }));
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<GrepResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   // テーマ適用
   useEffect(() => {
     const root = document.documentElement;
@@ -63,6 +72,14 @@ export function useApp(): UseAppReturn {
     }
   }, [state.theme]);
 
+  const toggleSidebar = useCallback(() => {
+    setState((prev) => {
+      const newState = !prev.isSidebarOpen;
+      setSidebarState(newState);
+      return { ...prev, isSidebarOpen: newState };
+    });
+  }, []);
+
   // キーボードショートカット
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -71,11 +88,20 @@ export function useApp(): UseAppReturn {
         e.preventDefault();
         toggleSidebar();
       }
+      // Cmd/Ctrl + Shift + F で検索タブにフォーカス
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === "f") {
+        e.preventDefault();
+        // サイドバーが閉じている場合は開く
+        if (!state.isSidebarOpen) {
+          toggleSidebar();
+        }
+        // 検索タブに切り替える処理はSidebarコンポーネント側で行う
+      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [state.isSidebarOpen, toggleSidebar]);
 
   const updateState = useCallback((updates: Partial<AppState>) => {
     setState((prev) => ({ ...prev, ...updates }));
@@ -143,14 +169,6 @@ export function useApp(): UseAppReturn {
     [updateState]
   );
 
-  const toggleSidebar = useCallback(() => {
-    setState((prev) => {
-      const newState = !prev.isSidebarOpen;
-      setSidebarState(newState);
-      return { ...prev, isSidebarOpen: newState };
-    });
-  }, []);
-
   const handleFileDrop = useCallback(
     async (paths: string[]) => {
       if (paths.length === 0) {
@@ -181,6 +199,59 @@ export function useApp(): UseAppReturn {
     [updateState]
   );
 
+  const searchFiles = useCallback(
+    async (query: string) => {
+      setSearchQuery(query);
+
+      // デバウンス: 300ms待機
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+
+      if (!query.trim()) {
+        setSearchResults([]);
+        setIsSearching(false);
+        return;
+      }
+
+      if (!state.currentDirectory) {
+        setSearchResults([]);
+        setIsSearching(false);
+        return;
+      }
+
+      setIsSearching(true);
+
+      const directory = state.currentDirectory;
+      if (!directory) {
+        setIsSearching(false);
+        return;
+      }
+
+      searchTimeoutRef.current = setTimeout(async () => {
+        try {
+          const results = await grepDirectory(directory, query);
+          setSearchResults(results);
+        } catch (error) {
+          console.error("検索エラー:", error);
+          setSearchResults([]);
+        } finally {
+          setIsSearching(false);
+        }
+      }, 300);
+    },
+    [state.currentDirectory]
+  );
+
+  // クリーンアップ
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
+
   return {
     ...state,
     openDirectory,
@@ -189,5 +260,9 @@ export function useApp(): UseAppReturn {
     toggleSidebar,
     handleFileDrop,
     changeTheme,
+    searchQuery,
+    searchResults,
+    isSearching,
+    searchFiles,
   };
 }
