@@ -6,35 +6,34 @@ import { MarkdownViewer } from "./components/MarkdownViewer";
 import { Sidebar } from "./components/Sidebar";
 import { TableOfContents } from "./components/TableOfContents";
 import { Welcome } from "./components/Welcome";
-import { useApp } from "./hooks/useApp";
+import { useFileSystem } from "./hooks/useFileSystem";
+import { useSearch } from "./hooks/useSearch";
+import { useSidebar } from "./hooks/useSidebar";
+import { useTheme } from "./hooks/useTheme";
 
 interface FileDropPayload {
   paths: string[];
 }
 
 function App() {
+  // 各フックを個別に呼び出し
+  const { theme, changeTheme } = useTheme();
+  const { isSidebarOpen, toggleSidebar, openSidebar } = useSidebar();
   const {
     currentDirectory,
     selectedFile,
     fileTree,
     markdownContent,
-    isSidebarOpen,
     toc,
     history,
     isLoading,
     error,
-    theme,
-    searchQuery,
-    searchResults,
-    isSearching,
     openDirectory,
     openDirectoryFromPath,
     selectFile,
-    toggleSidebar,
     handleFileDrop,
-    changeTheme,
-    searchFiles,
-  } = useApp();
+  } = useFileSystem();
+  const { searchQuery, searchResults, isSearching, searchFiles } = useSearch(currentDirectory);
 
   // ファイルドロップイベントのリスナー
   useEffect(() => {
@@ -46,6 +45,23 @@ function App() {
       unlisten.then((fn) => fn());
     };
   }, [handleFileDrop]);
+
+  // キーボードショートカット: Cmd/Ctrl + Shift + F で検索タブにフォーカス
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === "f") {
+        e.preventDefault();
+        // サイドバーが閉じている場合は開く
+        if (!isSidebarOpen) {
+          openSidebar();
+        }
+        // 検索タブに切り替える処理はSidebarコンポーネント側で行う
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isSidebarOpen, openSidebar]);
 
   const fileName = selectedFile?.split("/").pop() ?? "";
 
