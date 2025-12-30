@@ -6,6 +6,7 @@ import { MarkdownViewer } from "./components/MarkdownViewer";
 import { Sidebar } from "./components/Sidebar";
 import { TableOfContents } from "./components/TableOfContents";
 import { Welcome } from "./components/Welcome";
+import { ErrorProvider, useError } from "./contexts/ErrorContext";
 import { useFileSystem } from "./hooks/useFileSystem";
 import { useSearch } from "./hooks/useSearch";
 import { useSidebar } from "./hooks/useSidebar";
@@ -15,10 +16,11 @@ interface FileDropPayload {
   paths: string[];
 }
 
-function App() {
+function AppContent() {
   // 各フックを個別に呼び出し
   const { theme, changeTheme } = useTheme();
   const { isSidebarOpen, toggleSidebar, openSidebar } = useSidebar();
+  const { error, clearError } = useError();
   const {
     currentDirectory,
     selectedFile,
@@ -27,7 +29,6 @@ function App() {
     toc,
     history,
     isLoading,
-    error,
     openDirectory,
     openDirectoryFromPath,
     selectFile,
@@ -65,6 +66,11 @@ function App() {
 
   const fileName = selectedFile?.split("/").pop() ?? "";
 
+  const handleRetry = () => {
+    clearError();
+    openDirectory();
+  };
+
   return (
     <div className="flex h-screen bg-surface-50 dark:bg-surface-950 text-surface-900 dark:text-surface-100">
       {/* サイドバー */}
@@ -98,7 +104,7 @@ function App() {
           </div>
         ) : error ? (
           <div className="flex-1">
-            <ErrorMessage message={error} onRetry={openDirectory} />
+            <ErrorMessage message={error} onRetry={handleRetry} />
           </div>
         ) : markdownContent ? (
           <>
@@ -116,6 +122,14 @@ function App() {
         )}
       </main>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <ErrorProvider>
+      <AppContent />
+    </ErrorProvider>
   );
 }
 

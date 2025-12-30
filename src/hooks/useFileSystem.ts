@@ -1,4 +1,4 @@
-import { getErrorMessage } from "@/lib/error";
+import { useError } from "@/contexts/ErrorContext";
 import { addToHistory, getHistory } from "@/lib/storage";
 import { openDirectoryDialog, readFileContent, scanDirectory } from "@/lib/tauri";
 import { generateToc } from "@/lib/toc";
@@ -13,7 +13,6 @@ interface FileSystemState {
   toc: TocItem[];
   history: HistoryEntry[];
   isLoading: boolean;
-  error: string | null;
 }
 
 interface UseFileSystemReturn extends FileSystemState {
@@ -21,7 +20,6 @@ interface UseFileSystemReturn extends FileSystemState {
   openDirectoryFromPath: (path: string) => Promise<void>;
   selectFile: (path: string) => Promise<void>;
   handleFileDrop: (paths: string[]) => Promise<void>;
-  clearError: () => void;
 }
 
 const initialState: FileSystemState = {
@@ -32,13 +30,14 @@ const initialState: FileSystemState = {
   toc: [],
   history: [],
   isLoading: false,
-  error: null,
 };
 
 /**
  * ファイルシステム操作を管理するカスタムフック
  */
 export function useFileSystem(): UseFileSystemReturn {
+  const { withErrorHandling } = useError();
+
   const [state, setState] = useState<FileSystemState>(() => ({
     ...initialState,
     history: getHistory(),
@@ -50,9 +49,8 @@ export function useFileSystem(): UseFileSystemReturn {
 
   const openDirectoryFromPath = useCallback(
     async (path: string) => {
-      updateState({ isLoading: true, error: null });
-
-      try {
+      updateState({ isLoading: true });
+      const result = await withErrorHandling(async () => {
         const fileTree = await scanDirectory(path);
         const history = addToHistory(path);
 
@@ -65,32 +63,30 @@ export function useFileSystem(): UseFileSystemReturn {
           toc: [],
           isLoading: false,
         });
-      } catch (error) {
-        updateState({
-          isLoading: false,
-          error: getErrorMessage(error),
-        });
+      });
+
+      // エラーが発生した場合はローディング状態を解除
+      if (result === undefined) {
+        updateState({ isLoading: false });
       }
     },
-    [updateState]
+    [updateState, withErrorHandling]
   );
 
   const openDirectory = useCallback(async () => {
-    try {
+    await withErrorHandling(async () => {
       const path = await openDirectoryDialog();
       if (path) {
         await openDirectoryFromPath(path);
       }
-    } catch (error) {
-      updateState({ error: getErrorMessage(error) });
-    }
-  }, [openDirectoryFromPath, updateState]);
+    });
+  }, [openDirectoryFromPath, withErrorHandling]);
 
   const selectFile = useCallback(
     async (path: string) => {
-      updateState({ isLoading: true, error: null });
+      updateState({ isLoading: true });
 
-      try {
+      const result = await withErrorHandling(async () => {
         const content = await readFileContent(path);
         const toc = generateToc(content);
 
@@ -100,14 +96,14 @@ export function useFileSystem(): UseFileSystemReturn {
           toc,
           isLoading: false,
         });
-      } catch (error) {
-        updateState({
-          isLoading: false,
-          error: getErrorMessage(error),
-        });
+      });
+
+      // エラーが発生した場合はローディング状態を解除
+      if (result === undefined) {
+        updateState({ isLoading: false });
       }
     },
-    [updateState]
+    [updateState, withErrorHandling]
   );
 
   const handleFileDrop = useCallback(
@@ -132,16 +128,11 @@ export function useFileSystem(): UseFileSystemReturn {
     [openDirectoryFromPath, selectFile]
   );
 
-  const clearError = useCallback(() => {
-    updateState({ error: null });
-  }, [updateState]);
-
   return {
     ...state,
     openDirectory,
     openDirectoryFromPath,
     selectFile,
     handleFileDrop,
-    clearError,
   };
 }
