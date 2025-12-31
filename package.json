@@ -11,6 +11,10 @@
     "format": "biome format --write .",
     "lint": "biome lint .",
     "lint:fix": "biome check --write .",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "test:run": "vitest run",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build"
@@ -29,14 +33,21 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@tauri-apps/cli": "^1.6.3",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.1",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jsdom": "^27.0.0",
     "@types/react": "^18.3.14",
     "@types/react-dom": "^18.3.3",
     "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/ui": "^4.0.16",
     "autoprefixer": "^10.4.20",
+    "jsdom": "^27.4.0",
     "lefthook": "^2.0.13",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.16",
     "typescript": "^5.7.2",
-    "vite": "^6.0.5"
+    "vite": "^6.0.5",
+    "vitest": "^4.0.16"
   }
 }

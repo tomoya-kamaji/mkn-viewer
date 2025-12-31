@@ -48,6 +48,18 @@ async function renderMermaidBlock(block: Element, index: number): Promise<void> 
 }
 
 export function MarkdownViewer({ content, fileName, theme: _theme }: MarkdownViewerProps) {
+  const [isCopied, setIsCopied] = useState(false);
+
+  // ページ全体をコピー
+  const handleCopyPage = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(content);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (error) {
+      console.error("コピーに失敗しました:", error);
+    }
+  }, [content]);
   const containerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -343,11 +355,57 @@ export function MarkdownViewer({ content, fileName, theme: _theme }: MarkdownVie
       {/* ファイル名ヘッダー - ミニマルデザイン */}
       <header className="sticky top-0 z-10 backdrop-blur-xl bg-surface-50/80 dark:bg-surface-950/80 border-b border-surface-200/50 dark:border-surface-800/50">
         <div className="max-w-3xl mx-auto px-8 py-4">
-          <div className="flex items-center gap-3">
-            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-violet-500 to-indigo-500" />
-            <h1 className="text-sm font-medium tracking-wide text-surface-600 dark:text-surface-400 truncate">
-              {fileName}
-            </h1>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-2 h-2 rounded-full bg-gradient-to-r from-violet-500 to-indigo-500 flex-shrink-0" />
+              <h1 className="text-sm font-medium tracking-wide text-surface-600 dark:text-surface-400 truncate">
+                {fileName}
+              </h1>
+            </div>
+            <button
+              type="button"
+              onClick={handleCopyPage}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-100 hover:bg-surface-200 dark:hover:bg-surface-800 rounded-md transition-colors"
+              title="ページ全体をコピー"
+            >
+              {isCopied ? (
+                <>
+                  <svg
+                    className="w-4 h-4 text-emerald-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  <span className="text-emerald-500">コピーしました</span>
+                </>
+              ) : (
+                <>
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                    />
+                  </svg>
+                  <span>コピー</span>
+                </>
+              )}
+            </button>
           </div>
         </div>
 
