@@ -18,6 +18,10 @@
 - ⌨️ **キーボードショートカット** - 効率的な操作をサポート
 - 📚 **履歴機能** - 過去に開いたフォルダを記憶
 
+## 画像
+<img width="1910" height="997" alt="image" src="https://github.com/user-attachments/assets/fd7a3993-eacf-4e3d-8bb1-8f665c068b7a" />
+
+
 ## インストール
 
 ### ソースからビルド
