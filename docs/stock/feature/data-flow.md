@@ -394,3 +394,4 @@ docs/stock/feature/
 - `src-tauri/src/main.rs` - Tauri アプリケーションエントリー
 - `src-tauri/src/commands.rs` - Rust コマンド実装
 
+

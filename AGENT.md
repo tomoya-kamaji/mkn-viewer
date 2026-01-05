@@ -152,3 +152,4 @@ bun add -d <package>
 - Tailwind CSS 3 を使用
 - CSS 変数でテーマ管理（`src/index.css`）
 - フォント: Noto Sans JP（本文）、JetBrains Mono（コード）
+
