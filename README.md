@@ -20,18 +20,6 @@
 
 ## インストール
 
-### ビルド済みバイナリ（推奨）
-
-[Releases](../../releases) ページから最新版をダウンロードしてください。
-
-| OS | ファイル |
-|----|----------|
-| macOS (Apple Silicon) | `mkn_x.x.x_aarch64.dmg` |
-| macOS (Intel) | `mkn_x.x.x_x64.dmg` |
-| Windows | `mkn_x.x.x_x64-setup.exe` |
-| Linux (Debian/Ubuntu) | `mkn_x.x.x_amd64.deb` |
-| Linux (AppImage) | `mkn_x.x.x_amd64.AppImage` |
-
 ### ソースからビルド
 
 #### 前提条件
@@ -57,6 +45,15 @@ sudo apt install -y \
 
 </details>
 
+### Cursor コマンド
+
+[Cursor](https://cursor.sh/) を使用している場合、以下のコマンドが利用できます：
+
+| コマンド | 説明 |
+|---------|------|
+| `/setup` | 開発環境のセットアップ（依存関係インストール） |
+| `/install` | ビルド＆ローカルインストール（セットアップ含む） |
+| `/create-pr` | 変更をコミット分割してPR作成 |
 
 
 #### ビルド手順
@@ -86,16 +83,6 @@ bun run tauri:build
 1. **アプリを起動** - mknを開く
 2. **フォルダを選択** - 「フォルダを開く」ボタンまたはフォルダをドラッグ＆ドロップ
 3. **ファイルを閲覧** - サイドバーから.md/.mdcファイルを選択
-
-### Cursor コマンド
-
-[Cursor](https://cursor.sh/) を使用している場合、以下のコマンドが利用できます：
-
-| コマンド | 説明 |
-|---------|------|
-| `/setup` | 開発環境のセットアップ（依存関係インストール） |
-| `/install` | ビルド＆ローカルインストール（セットアップ含む） |
-| `/create-pr` | 変更をコミット分割してPR作成 |
 
 
 ## 開発
