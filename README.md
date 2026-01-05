@@ -55,23 +55,27 @@ sudo apt install -y \
 
 | コマンド | 説明 |
 |---------|------|
-| `/setup` | 開発環境のセットアップ（依存関係インストール） |
-| `/install` | ビルド＆ローカルインストール（セットアップ含む） |
+| `/mkn-setup` | 開発環境のセットアップ（依存関係インストール） |
+| `/mkn-install` | ビルド＆ローカルインストール（セットアップ含む） |
 | `/create-pr` | 変更をコミット分割してPR作成 |
 
 
-#### ビルド手順
+#### セットアップ手順
 
 ```bash
 # リポジトリをクローン
-git clone https://github.com/YOUR_USERNAME/mkn-view.git
-cd mkn-view
+git clone https://github.com/tomoya-kamaji/mkn-viewer.git
+cd mkn-viewer
+```
 
-# 依存関係をインストール
-bun install
+Cursorを使用している場合、以下のコマンドが利用できます
 
-# 本番ビルド
-bun run tauri:build
+```bash
+# cursorコマンドでセットアップ
+/mkn-setup
+
+# cursorコマンドでインストール
+/mkn-install
 ```
 
 ビルド後のアプリケーションは以下に生成されます：
